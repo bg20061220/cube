@@ -1,0 +1,13 @@
+Feedback Form Fields : 
+1) Type : large text area    
+   Label : Tell us about ur experience 
+2) Category : 
+Type : Dropdown 
+Label : What best describes your feedback 
+Options: Usability , Clarity , Emotion , Feature Request
+3) Context : 
+WHich part of the product is this about ? ( Optional)
+Type : Can be text or dropdown custom
+4) Severity/ Impact 
+How much did this affect ur experience 
+Optioons : Minor Issue , Major Issue , Moderate Issue 
