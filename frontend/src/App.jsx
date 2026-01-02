@@ -2,6 +2,7 @@ import { useState } from 'react'
 import {BrowserRouter , Routes , Route} from "react-router-dom";
 import Dashboard from "./pages/Dashoard";
 import PublicForm from "./pages/PublicForm";
+import FormResponses from './pages/FormResponses';
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -11,6 +12,7 @@ function App(){
     <BrowserRouter>
     <Routes>
       <Route path = "/dashboard" element = {<Dashboard />} />
+      <Route path = "/dashboard/:formId" element = {<FormResponses />} />
       <Route path = "/form/:formId" element = {<PublicForm />} />
     </Routes>
   </BrowserRouter>
