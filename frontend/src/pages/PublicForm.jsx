@@ -6,9 +6,9 @@ export default function PublicForm() {
   const { formId } = useParams();
   const [form, setForm] = useState(null);
   const [text, setText] = useState("");
-  const [category, setCategory] = useState("Usability");
+  const [category, setCategory] = useState("");
   const [context, setContext] = useState("");
-  const [severity, setSeverity] = useState("Minor");
+  const [severity, setSeverity] = useState("");
 
 useEffect(() => {
   if (!formId) return;
@@ -22,7 +22,7 @@ useEffect(() => {
   api.get(`/forms/public/${idNum}`)
     .then(res => {
       setForm(res.data);
-      setContext(res.data.context_options?.[0] || "");
+      // setContext(res.data.context_options?.[0] || "");
     })
     .catch(err => console.error("Failed to fetch form:", err));
 }, [formId]);
@@ -41,34 +41,44 @@ useEffect(() => {
   if (!form) return <p>Loading...</p>;
 
   return (
-    <div>
-      <h2>{form.title}</h2>
+  <div className="feedback-container">
+    <div className="feedback-box">
+      <h2 className="feedback-title">{form.title}</h2>
 
-      <textarea
-        placeholder="Your feedback"
-        onChange={e => setText(e.target.value)}
-      />
+      <div className="feedback-fields">
+        <textarea
+          placeholder="Your feedback"
+          onChange={e => setText(e.target.value)}
+        />
 
-      <select onChange={e => setCategory(e.target.value)}>
-        <option>Usability</option>
-        <option>Clarity</option>
-        <option>Emotion</option>
-        <option>Feature request</option>
-      </select>
+        <select value = {category} onChange={e => setCategory(e.target.value)}>
+          <option value="" disabled>Category</option> 
+          <option>Usability</option>
+          <option>Clarity</option>
+          <option>Emotion</option>
+          <option>Feature Request</option>
+        </select>
 
-      <select onChange={e => setContext(e.target.value)}>
-        {form.context_options.map(c => (
-          <option key={c}>{c}</option>
-        ))}
-      </select>
+        <select value = {context} onChange={e => setContext(e.target.value)}>
+          <option value="" disabled>Context</option>  
+          {form.context_options.map(c => (
+            <option key={c}>{c}</option>
+          ))}
+        </select>
 
-      <select onChange={e => setSeverity(e.target.value)}>
-        <option>Minor</option>
-        <option>Moderate</option>
-        <option>Major</option>
-      </select>
+        <select value = {severity} onChange={e => setSeverity(e.target.value)}>
+          <option value="" disabled>Severity</option> 
+          <option>Minor</option>
+          <option>Moderate</option>
+          <option>Major</option>
+        </select>
+      </div>
 
-      <button onClick={submit}>Submit Feedback</button>
+      <button className="feedback-submit-btn" onClick={submit}>
+        Submit Feedback
+      </button>
     </div>
-  );
+  </div>
+);
+
 }

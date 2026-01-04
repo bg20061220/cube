@@ -1,42 +1,411 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+/* Signup.css */
+
+/* Full screen background */
+.signup-container {
+  height: 100vh;
+  width: 100vw;
+  background-color: #9fa1df;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Centered box */
+.signup-box {
+  background-color: #D3A588;
+  padding: 40px 30px;
+  border-radius: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 350px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Headline */
+.signup-box h2 {
+  color: white;
+  margin-bottom: 10px;
+}
+
+/* Inputs */
+.signup-box input {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+
+/* Buttons */
+.signup-box button {
+  width: 100%;
+  padding: 12px;
+  background-color: #283a3c;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s; 
+}
+
+ .signup-box button:hover {
+  transform: scale(1.05);
+  /* background-color: #162026; slightly darker on hover */
+  }  
+
+/* Secondary button */
+.signup-box button.secondary {
+  background-color: #283a3c;
+}
+
+/* Message text */
+.signup-box .msg {
+  color: white;
+  font-size: 14px;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+
+/* Login page css */ 
+/* Full screen background */
+.login-container {
+  height: 100vh;
+  width: 100vw;
+  background-color: #9fa1df;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Centered login box */
+.login-box {
+  background-color: #D3A588;
+  padding: 40px 30px;
+  border-radius: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  width: 350px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* Title */
+.login-box h2 {
+  color: white;
+  margin-bottom: 10px;
 }
 
-.card {
-  padding: 2em;
+/* Inputs */
+.login-box input {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  font-size: 16px;
 }
 
-.read-the-docs {
-  color: #888;
+/* Button */
+.login-box button {
+  width: 100%;
+  padding: 12px;
+  background-color: #283a3c;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.login-box button:hover {
+  transform: scale(1.05);
+  background-color: #1f2e30;
+}
+
+/* Message */
+.login-box .msg {
+  color: white;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Links */
+.login-box .link-text {
+  font-size: 14px;
+  color: white;
+}
+
+.login-box .link-text a {
+  color: #283a3c;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.login-box .link-text a:hover {
+  text-decoration: underline;
+}
+/* Smaller button-style links */
+.login-box .link-button {
+  width: 80%;
+  padding: 10px;
+  background-color: #283a3c;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;        /* slightly bigger text */
+  font-weight: 600;       /* bolder */
+  cursor: pointer;
+  opacity: 0.85;          /* subtle difference from main button */
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.login-box .link-button:hover {
+  transform: scale(1.04);
+  opacity: 1;
+}
+
+
+/* Dashboard.jsx css */ 
+/* Page container */
+.dashboard-container {
+  width : 100vw ; 
+  min-height: 100vh;
+  background-color: #9fa1df;
+  padding: 30px 60px;
+  box-sizing : border-box
+}
+
+/* Title */
+.dashboard-title {
+  text-align: center;
+  font-size: 26px;
+  margin-bottom: 30px;
+  color: #283a3c;
+}
+
+/* Create form box */
+.create-form-box {
+  background-color: #D3A588;
+  padding: 25px 45px; /* extra left + right space */
+  border-radius: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+.create-form-title {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #283a3c;
+}
+.create-form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Inputs & textarea */
+.create-form-fields input,
+.create-form-fields textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+  outline: none;
+}
+
+/* Optional: focus effect */
+.create-form-fields input,
+.create-form-fields textarea {
+  width: 100%;
+  box-sizing: border-box; /* 🔑 prevents overflow */
+}
+
+.create-form-btn {
+  width: 80%;            /* 20% smaller */
+  margin: 20px auto 0;   /* center it */
+  background-color: #283a3c;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.create-form-btn:hover {
+  background-color: #1f2e30;
+}
+/* View forms button */
+.view-forms-btn {
+  background-color: #283a3c;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 30px;
+  margin : 0 auto 30px auto ; 
+  display: block;
+}
+
+.view-forms-btn:hover {
+  background-color: #1f2e30;
+}
+
+/* Forms section */
+.forms-section h2 {
+  margin-bottom: 15px;
+  color: #283a3c;
+}
+
+/* Table */
+.forms-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #D3A588;
+  border-radius: 15px;
+  overflow: hidden;
+  table-layout: fixed ;
+}
+
+.forms-table th,
+.forms-table td {
+  padding: 15px;
+  text-align: center;
+}
+/* Column sizing */
+.forms-table th:nth-child(1),
+.forms-table td:nth-child(1) {
+  width: 40%; /* Form title gets more space */
+  text-align: left;
+}
+
+.forms-table th:not(:first-child),
+.forms-table td:not(:first-child) {
+  width: 20%;
+  text-align: center;
+}
+.forms-table th {
+  background-color: #c39576;
+  color: #283a3c;
+  font-weight: 600;
+}
+
+.forms-table tr:not(:last-child) {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Table buttons */
+.forms-table button {
+  background-color: #283a3c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.forms-table button:hover {
+  background-color: #1f2e30;
+}
+
+/* Responses section */
+.responses-section {
+  margin-top: 40px;
+}
+
+/* Public Form Css */
+
+/* Full screen container */
+.feedback-container {
+  min-height: 100vh;
+  width: 100vw;
+  background-color: #9fa1df; /* same as signup/login background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Centered box */
+.feedback-box {
+  background-color: #D3A588; /* same as signup/login box */
+  padding: 40px 30px;
+  border-radius: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 400px; /* fixed width for readability */
+  box-sizing : border-box ;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+/* Title */
+.feedback-title {
+  text-align: center;
+  color: #283a3c;
+  margin-bottom: 15px;
+}
+
+/* Fields container */
+.feedback-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+/* Textarea & selects */
+.feedback-fields textarea,
+.feedback-fields select {
+  width: 100%;
+  box-sizing: border-box ;
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+  outline: none;
+}
+
+/* Textarea height */
+.feedback-fields textarea {
+  min-height: 100px;
+  resize: vertical; /* allows user to expand */
+}
+
+/* Focus effect */
+.feedback-fields textarea:focus,
+.feedback-fields select:focus {
+  outline: 2px solid #283a3c;
+}
+
+/* Submit button */
+.feedback-submit-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #283a3c; /* button color */
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.feedback-submit-btn:hover {
+  transform: scale(1.05);
+  background-color: #1f2e30;
 }

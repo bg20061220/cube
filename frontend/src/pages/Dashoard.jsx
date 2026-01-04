@@ -15,50 +15,73 @@ export default function Dashboard() {
     setShowForms(true);
   }
 
-  return (
-    <div>
-      <h1>Researcher Dashboard</h1>
+return (
+  <div className="dashboard-container">
+    {/* Title */}
+    <h1 className="dashboard-title">Researcher Dashboard</h1>
 
+    {/* Create Form Box */}
+    <div className="create-form-box">
       <CreateForm onCreate={setActiveFormId} />
+    </div>
 
-      <button onClick={fetchMyForms}>
-        View all created forms
-      </button>
+    {/* View Forms Button */}
+    <button className="view-forms-btn" onClick={fetchMyForms}>
+      View all created forms
+    </button>
 
-      {showForms && (
-  <div>
-    <h2>Your Forms</h2>
+    {/* Forms Table */}
+    {showForms && (
+      <div className="forms-section">
+        <h2>Your Forms</h2>
 
-    {forms.length === 0 ? (
-      <p>You haven’t created any forms yet.</p>
-    ) : (
-      <ul>
-        {forms.map((form) => (
-          <li key={form.id}>
-            <strong>{form.title}</strong>
-            <button onClick={() => setActiveFormId(form.id)}>
-              View Responses
-            </button>
-            <button onClick={() => navigate(`/analytics/${form.id}`)}>
-  View Analytics
-</button>
- <button onClick={() => window.open(`/form/${form.id}`, "_blank")}>
-                  Open Feedback Form
-                </button>
-          </li>
-        ))}
-      </ul>
+        {forms.length === 0 ? (
+          <p>You haven’t created any forms yet.</p>
+        ) : (
+          <table className="forms-table">
+            <thead>
+              <tr>
+                <th>Form Title</th>
+                <th>Responses</th>
+                <th>Analytics</th>
+                <th>Open Form</th>
+              </tr>
+            </thead>
+            <tbody>
+              {forms.map((form) => (
+                <tr key={form.id}>
+                  <td>{form.title}</td>
+                  <td>
+                    <button onClick={() => setActiveFormId(form.id)}>
+                      View Responses
+                    </button>
+                  </td>
+                  <td>
+                    <button onClick={() => navigate(`/analytics/${form.id}`)}>
+                      View Analytics
+                    </button>
+                  </td>
+                  <td>
+                    <button onClick={() => window.open(`/form/${form.id}`, "_blank")}>
+                      Open Feedback Form
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+    )}
+
+    {/* Responses */}
+    {activeFormId && (
+      <div className="responses-section">
+        <h2>Responses for Form #{activeFormId}</h2>
+        <ResponseList formId={activeFormId} />
+      </div>
     )}
   </div>
-)}
+);
 
-
-      {activeFormId && (
-        <>
-          <h2>Responses for Form #{activeFormId}</h2>
-          <ResponseList formId={activeFormId} />
-        </>
-      )}
-    </div>
-  );
 }

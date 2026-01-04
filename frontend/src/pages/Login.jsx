@@ -19,19 +19,34 @@ export default function Login({ setUser }) {
     }
   };
 
-  return (
-    <div>
-      <h2>Login</h2>
-      <input placeholder="Email" onChange={e => setEmail(e.target.value)} />
-      <input type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
-      <button onClick={handleLogin}>Log In</button>
-      <p>{msg}</p>
-      <p>
-        Forgot password? <a href="/forgot-password">Click here</a>
-      </p>
-      <p>
-        No account? <a href="/signup">Sign up</a>
-      </p>
+   return (
+    <div className="login-container">
+      <div className="login-box">
+        <h2>Login</h2>
+
+        <input
+          placeholder="Email"
+          onChange={e => setEmail(e.target.value)}
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+          onChange={e => setPassword(e.target.value)}
+        />
+
+        <button onClick={handleLogin}>Log In</button>
+
+        {msg && <p className="msg">{msg}</p>}
+
+       <button className="link-button" onClick={() => navigate("/forgot-password")}>
+  Forgot Password?
+</button>
+
+<button className="link-button" onClick={() => navigate("/signup")}>
+  No Account? Sign Up
+</button>
+      </div>
     </div>
   );
 }

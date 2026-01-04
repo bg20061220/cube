@@ -1,5 +1,6 @@
 import { useState } from "react";
 import api from "../api";
+import "../App.css"
 
 export default function CreateForm({ onCreate }) {
   const [title, setTitle] = useState("");
@@ -18,8 +19,10 @@ export default function CreateForm({ onCreate }) {
 
   return (
     <div>
-      <h2>Create Feedback Form</h2>
+      <h2 className = "create-form-title">Create Feedback Form</h2>
+    <div className="create-form-fields"> 
 
+    
       <input
         placeholder="Form title"
         onChange={e => setTitle(e.target.value)}
@@ -30,7 +33,7 @@ export default function CreateForm({ onCreate }) {
         onChange={e => setContexts(e.target.value)}
       />
 
-      <button onClick={handleCreate}>Create Form</button>
+      <button className = "crete-form-btn" onClick={handleCreate}>Create Form</button>
 
       {link && (
         <p>
@@ -41,6 +44,7 @@ export default function CreateForm({ onCreate }) {
           </a>
         </p>
       )}
+      </div>
     </div>
   );
 }
