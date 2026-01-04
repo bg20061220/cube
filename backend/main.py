@@ -1,7 +1,12 @@
-from fastapi import FastAPI , Depends 
+from fastapi import FastAPI , Depends , HTTPException , status 
 from sqlalchemy.orm import Session
+from sqlalchemy  import DateTime 
+import datetime 
+from typing import List , Optional 
 import models , schemas , crud , database
-models.Base.metadata.create_all(bind=database.engine)
+from database import Base , engine 
+Base.metadata.create_all(bind=engine)
+
 from fastapi.middleware.cors import CORSMiddleware 
 
 app = FastAPI()
@@ -9,10 +14,11 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware , 
     allow_origins = ["*"],
-    allow_credentials = True ,
+    allow_credentials = False,
     allow_methods = ["*"],
     allow_headers = ["*"],
 )
+
 
 def get_db():
     db = database.SessionLocal()
@@ -21,37 +27,36 @@ def get_db():
     finally:
         db.close()
 
+def get_current_user(db: Session = Depends(get_db)):
+    return db.query(models.User).first()  # always returns the first user
 
 @app.post("/forms/", response_model=schemas.FormRead)
-def create_form_endpoint(form: schemas.FormCreate, db: Session = Depends(get_db)):
-    db_form = crud.create_form(db, form)
-    
-    # Convert context CSV to list
-    context_list = db_form.context_options.split(",") if db_form.context_options else []
-
-    # Create Pydantic response object
-    response = schemas.FormRead(
-        id=db_form.id,
-        title=db_form.title,
-        context_options=context_list
+def create_form_endpoint(form: schemas.FormCreate, db: Session = Depends(get_db), user: models.User = Depends(get_current_user)):
+    db_form = crud.create_form(db, form.title, form.context_options, user.id)
+    return schemas.FormRead(
+        id = db_form.id , 
+        title = db_form.title ,
+        context_options= db_form.context_options.split(",") if db_form.context_options else [],
+        user_id = db_form.user_id 
     )
-    return response
 
 
 
-@app.get("/forms/", response_model=list[schemas.FormRead])
-def get_forms_endpoint(db: Session = Depends(get_db)):
-    forms = crud.get_forms(db)
-    response_list = []
-    for f in forms:
-        response_list.append(
-            schemas.FormRead(
-                id=f.id,
-                title=f.title,
-                context_options=f.context_options.split(",") if f.context_options else []
-            )
+
+@app.get("/my/forms/", response_model=List[schemas.FormRead])
+def get_forms_endpoint(db: Session = Depends(get_db), user: models.User = Depends(get_current_user)):
+    forms = crud.get_forms_for_user(db, user.id)   
+    if not forms : 
+        return [] 
+    return [
+        schemas.FormRead(
+            id=f.id,
+            title=f.title,
+            context_options=f.context_options.split(",") if f.context_options else [],
+            user_id=f.user_id
         )
-    return response_list
+        for f in forms
+    ]
 
 
 @app.post("/responses/", response_model=schemas.ResponseRead)
@@ -64,4 +69,79 @@ def get_responses_endpoint(form_id: int = None, db: Session = Depends(get_db)):
     responses = crud.get_responses(db , form_id)
     return responses 
 
+@app.post("/signup")
+def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    existing = crud.get_user_by_email(db, user.email)
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    new_user = crud.create_user(db, user.email, user.password)
+    return {"id": new_user.id, "email": new_user.email}
 
+@app.post("/login")
+def login(user : schemas.UserLogin , db : Session = Depends(get_db)):
+    db_user = crud.authenticate_user(db , user.email , user.password)
+    if not db_user : 
+        raise HTTPException(status_code = 401 , detail = " Invalid credentials")
+    
+    print("User Logged in ")
+    print("Email : " , user.email )
+    return {"id" : db_user.id , "email" : db_user.email}
+
+@app.post("/forgot-password")
+def forgot_password(request: schemas.PasswordResetRequest, db: Session = Depends(get_db)):
+    user = crud.get_user_by_email(db, request.email)
+    if not user:
+        # Don't reveal existence of email
+        return {"msg": "If an account exists, a reset link has been sent"}
+    
+    token = crud.secrets.token_hex(32)
+    expires = datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+    crud.set_reset_token(db, user, token, expires)
+
+    # TODO: send email with reset link containing `token`
+    print(f"Reset link: https://yourfrontend.com/reset-password?token={token}")
+    
+    return {"msg": "If an account exists, a reset link has been sent"}
+
+@app.post("/reset-password")
+def reset_password_endpoint(data: schemas.PasswordReset, db: Session = Depends(get_db)):
+    user = crud.reset_password(db, data.token, data.new_password)
+    if not user:
+        raise HTTPException(status_code=400, detail="Invalid or expired token")
+    return {"msg": "Password reset successfully"}
+
+@app.get("/forms/{form_id}/analytics")
+def get_form_analytics(form_id : int , db : Session = Depends(get_db) , 
+                       user : models.User = Depends(get_current_user)):
+    
+    # Verify Ownership 
+    form = db.query(models.Form).filter(
+        models.Form.id == form_id , 
+        models.Form.user_id == user.id 
+    ).first() 
+
+    if not form : 
+        raise HTTPException( status_code = 404 , detail = "Form Not Found")
+    
+    responses = db.query(models.Response).filter(
+        models.Response.form_id == form_id 
+    ).all() 
+
+    total= len(responses)
+
+    by_category = {}
+    by_severity = {}
+    by_context = {}
+
+    for r in responses :
+        by_category[r.category] = by_category.get(r.category , 0 ) + 1 
+        by_severity[r.severity] = by_severity.get(r.severity , 0) + 1 
+        if r.context  : 
+            by_context[r.context] = by_context.get(r.context , 0) + 1 
+        
+    return {
+        "total_responses" : total , 
+        "by_category" : by_category, 
+        "by_severity" : by_severity,
+        "by_context" : by_context,
+    }

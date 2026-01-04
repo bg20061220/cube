@@ -11,6 +11,7 @@ class FormRead(BaseModel):
     id: int
     title: str
     context_options: List[str] = []
+    user_id : int 
 
     class Config:
         orm_mode = True
@@ -36,3 +37,18 @@ class ResponseRead(BaseModel):
 
     class Config:
         orm_mode = True
+
+class UserCreate(BaseModel):
+    email : str 
+    password : str 
+
+class UserLogin(BaseModel):
+    email : str 
+    password : str 
+
+class PasswordResetRequest(BaseModel):
+    email : str 
+
+class PasswordReset(BaseModel):
+    token : str 
+    new_password : str 
