@@ -10,13 +10,22 @@ export default function PublicForm() {
   const [context, setContext] = useState("");
   const [severity, setSeverity] = useState("Minor");
 
-  useEffect(() => {
-    api.get("/forms/").then(res => {
-      const found = res.data.find(f => f.id == formId);
-      setForm(found);
-      setContext(found.context_options[0]);
-    });
-  }, [formId]);
+useEffect(() => {
+  if (!formId) return;
+
+  const idNum = Number(formId);
+  if (isNaN(idNum)) {
+    console.error("Invalid formId", formId);
+    return;
+  }
+
+  api.get(`/forms/public/${idNum}`)
+    .then(res => {
+      setForm(res.data);
+      setContext(res.data.context_options?.[0] || "");
+    })
+    .catch(err => console.error("Failed to fetch form:", err));
+}, [formId]);
 
   const submit = async () => {
     await api.post("/responses/", {

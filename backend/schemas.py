@@ -11,7 +11,6 @@ class FormRead(BaseModel):
     id: int
     title: str
     context_options: List[str] = []
-    user_id : int 
 
     class Config:
         orm_mode = True
@@ -34,6 +33,7 @@ class ResponseRead(BaseModel):
     category: str
     context: Optional[str]
     severity: Optional[str]
+    
 
     class Config:
         orm_mode = True

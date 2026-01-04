@@ -42,6 +42,9 @@ export default function Dashboard() {
             <button onClick={() => navigate(`/analytics/${form.id}`)}>
   View Analytics
 </button>
+ <button onClick={() => window.open(`/form/${form.id}`, "_blank")}>
+                  Open Feedback Form
+                </button>
           </li>
         ))}
       </ul>

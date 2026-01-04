@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy  import DateTime 
 import datetime 
 from typing import List , Optional 
+from collections import defaultdict 
 import models , schemas , crud , database
 from database import Base , engine 
 Base.metadata.create_all(bind=engine)
@@ -41,7 +42,16 @@ def create_form_endpoint(form: schemas.FormCreate, db: Session = Depends(get_db)
     )
 
 
-
+@app.get("/forms/public/{form_id}" , response_model = schemas.FormRead)
+def get_public_form(form_id : int  , db: Session = Depends(get_db)):
+    form = db.query(models.Form).filter(models.Form.id == form_id).first()
+    if not form : 
+        raise HTTPException(status_code = 404 , detail = "Form not found")
+    return schemas.FormRead(
+        id = form.id , 
+        title = form.title , 
+        context_options = form.context_options.split(",") if form.context_options else [])
+    
 
 @app.get("/my/forms/", response_model=List[schemas.FormRead])
 def get_forms_endpoint(db: Session = Depends(get_db), user: models.User = Depends(get_current_user)):
@@ -64,10 +74,16 @@ def create_response_endpoint(response: schemas.ResponseCreate, db: Session = Dep
     db_response = crud.create_response(db , response)
     return db_response 
 
-@app.get("/responses/", response_model=list[schemas.ResponseRead])
-def get_responses_endpoint(form_id: int = None, db: Session = Depends(get_db)):
-    responses = crud.get_responses(db , form_id)
-    return responses 
+@app.get("/responses/", response_model=List[schemas.ResponseRead])
+def get_responses_endpoint(
+    form_id: int = int,  # form_id is required
+    db: Session = Depends(get_db),
+    user: models.User = Depends(get_current_user)  # ensure user is logged in
+):
+    
+    # Fetch responses for that form
+    responses = crud.get_responses(db, form_id)
+    return responses
 
 @app.post("/signup")
 def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
@@ -110,38 +126,42 @@ def reset_password_endpoint(data: schemas.PasswordReset, db: Session = Depends(g
         raise HTTPException(status_code=400, detail="Invalid or expired token")
     return {"msg": "Password reset successfully"}
 
-@app.get("/forms/{form_id}/analytics")
-def get_form_analytics(form_id : int , db : Session = Depends(get_db) , 
-                       user : models.User = Depends(get_current_user)):
-    
-    # Verify Ownership 
-    form = db.query(models.Form).filter(
-        models.Form.id == form_id , 
-        models.Form.user_id == user.id 
-    ).first() 
+@app.get("/analytics/{form_id}")
+def get_form_analytics(
+    form_id: int,
+    db: Session = Depends(get_db),
+    user: models.User = Depends(get_current_user)
+):
+    # Fetch form and check ownership
+    form = db.query(models.Form).filter(models.Form.id == form_id).first()
+    if not form:
+        raise HTTPException(status_code=404, detail="Form not found")
+    if form.user_id != user.id:
+        raise HTTPException(status_code=403, detail="Not authorized")
 
-    if not form : 
-        raise HTTPException( status_code = 404 , detail = "Form Not Found")
-    
-    responses = db.query(models.Response).filter(
-        models.Response.form_id == form_id 
-    ).all() 
+    # Fetch responses
+    responses = db.query(models.Response).filter(models.Response.form_id == form_id).all()
 
-    total= len(responses)
-
-    by_category = {}
-    by_severity = {}
-    by_context = {}
-
-    for r in responses :
-        by_category[r.category] = by_category.get(r.category , 0 ) + 1 
-        by_severity[r.severity] = by_severity.get(r.severity , 0) + 1 
-        if r.context  : 
-            by_context[r.context] = by_context.get(r.context , 0) + 1 
-        
-    return {
-        "total_responses" : total , 
-        "by_category" : by_category, 
-        "by_severity" : by_severity,
-        "by_context" : by_context,
+    # Prepare analytics
+    analytics = {
+        "total_responses": len(responses),
+        "by_severity": {},
+        "by_category": {},
+        "by_context": {}
     }
+
+    # Group responses
+    for r in responses:
+        # Severity
+        key = r.severity if r.severity else "Unspecified"
+        analytics["by_severity"].setdefault(key, []).append(r.text)
+
+        # Category
+        key = r.category if r.category else "Unspecified"
+        analytics["by_category"].setdefault(key, []).append(r.text)
+
+        # Context
+        key = r.context if r.context else "Unspecified"
+        analytics["by_context"].setdefault(key, []).append(r.text)
+
+    return analytics
