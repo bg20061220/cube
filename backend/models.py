@@ -17,7 +17,7 @@ class Response(Base) :
     id = Column(Integer, primary_key = True , index = True)
     form_id = Column(Integer, ForeignKey("forms.id"), nullable=False)
     text = Column(Text, nullable = False)
-    category = Column(String , nullable = False)
+    category = Column(String , nullable = True )
     context = Column(String , nullable = True)
     severity = Column(String , nullable = True)
 

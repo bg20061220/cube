@@ -409,3 +409,133 @@
   transform: scale(1.05);
   background-color: #1f2e30;
 }
+
+
+/* Analytics Dashboard Css */
+
+.analytics-container {
+  min-height: 100vh;
+  width: 100vw;
+  padding: 2rem 15%;
+  background-color: #9fa1df;
+  box-sizing: border-box;
+}
+
+/* Title */
+.analytics-title {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+/* Tiles container */
+.analytics-tiles {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  /* Remove fixed height, let tiles naturally size themselves */
+  margin-bottom: 3rem; /* space between tiles and responses */
+}
+
+/* Tile styles */
+.analytics-tile {
+  background-color: #D3A588;
+  border-radius: 16px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  min-width: 250px;
+  transition: transform 0.2s;
+}
+
+.analytics-tile:hover {
+  transform: translateY(-5px);
+}
+
+.analytics-tile h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.analytics-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Subtiles */
+.analytics-subtiles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.analytics-subtile {
+  background-color: #e6c895;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 500;
+}
+
+.analytics-subtile:hover {
+  background-color: #283a3c;
+  color: white;
+}
+
+/* Responses Table Section */
+/* ===== Responses Table Section ===== */
+.analytics-table-section {
+  margin-top: 4rem;
+  width: 100%;
+  padding: 1.5rem;
+  border-radius: 16px;
+  background-color: #D3A588;
+  box-sizing: border-box;
+  overflow-x: auto; /* allows scrolling if table is wider */
+}
+
+/* ===== Table ===== */
+.analytics-table {
+  width: 100%;
+  border-collapse: collapse; /* ensures borders are merged */
+  text-align: left;
+}
+
+.analytics-table th,
+.analytics-table td {
+  border: 1px solid #ccc;
+  padding: 0.75rem 1rem;
+}
+
+.analytics-table th {
+  background-color: #e6c895;
+  font-weight: 600;
+}
+
+.analytics-table td {
+  background-color: #fff;
+  color : black  /* ensures contrast with container */
+}
+
+/* Optional hover for rows */
+.analytics-table tbody tr:hover {
+  background-color: #f0f0f0;
+}
+
+/* Close button */
+.analytics-close-btn {
+  margin: 1.5rem auto 0;
+  display: block;
+  padding: 0.6rem 1.5rem;
+  background-color: #283a3c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+}

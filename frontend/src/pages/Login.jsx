@@ -43,7 +43,7 @@ export default function Login({ setUser }) {
   Forgot Password?
 </button>
 
-<button className="link-button" onClick={() => navigate("/signup")}>
+<button className="link-button" onClick={() => navigate("/")}>
   No Account? Sign Up
 </button>
       </div>

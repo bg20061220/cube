@@ -31,9 +31,9 @@ useEffect(() => {
     await api.post("/responses/", {
       form_id: Number(formId),
       text,
-      category,
-      context,
-      severity
+      category : category || null,
+      context : context || null,
+      severity: severity || null 
     });
     alert("Feedback submitted!");
   };
@@ -57,6 +57,8 @@ useEffect(() => {
           <option>Clarity</option>
           <option>Emotion</option>
           <option>Feature Request</option>
+          <option value = "None">None </option>
+
         </select>
 
         <select value = {context} onChange={e => setContext(e.target.value)}>
@@ -64,6 +66,7 @@ useEffect(() => {
           {form.context_options.map(c => (
             <option key={c}>{c}</option>
           ))}
+          <option value="None">None </option>
         </select>
 
         <select value = {severity} onChange={e => setSeverity(e.target.value)}>
@@ -71,6 +74,8 @@ useEffect(() => {
           <option>Minor</option>
           <option>Moderate</option>
           <option>Major</option>
+          <option value = "None">None </option>
+
         </select>
       </div>
 

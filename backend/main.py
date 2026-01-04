@@ -1,6 +1,6 @@
 from fastapi import FastAPI , Depends , HTTPException , status 
 from sqlalchemy.orm import Session
-from sqlalchemy  import DateTime 
+from sqlalchemy  import DateTime , func 
 import datetime 
 from typing import List , Optional 
 from collections import defaultdict 
@@ -31,6 +31,10 @@ def get_db():
 def get_current_user(db: Session = Depends(get_db)):
     return db.query(models.User).first()  # always returns the first user
 
+def add_to_group(group , key , value) : 
+    if value is None or value.strip() == "" : 
+        return 
+    group.setdefault(value , []).append(key)
 @app.post("/forms/", response_model=schemas.FormRead)
 def create_form_endpoint(form: schemas.FormCreate, db: Session = Depends(get_db), user: models.User = Depends(get_current_user)):
     db_form = crud.create_form(db, form.title, form.context_options, user.id)
@@ -139,29 +143,31 @@ def get_form_analytics(
     if form.user_id != user.id:
         raise HTTPException(status_code=403, detail="Not authorized")
 
-    # Fetch responses
-    responses = db.query(models.Response).filter(models.Response.form_id == form_id).all()
+    responses = (
+        db.query(models.Response)
+        .filter(
+            models.Response.form_id == form_id,
+        )
+        .all()
+    )
 
-    # Prepare analytics
-    analytics = {
-        "total_responses": len(responses),
-        "by_severity": {},
-        "by_category": {},
-        "by_context": {}
-    }
+    by_severity = {}
+    by_category = {}
+    by_context = {}
 
-    # Group responses
     for r in responses:
-        # Severity
-        key = r.severity if r.severity else "Unspecified"
-        analytics["by_severity"].setdefault(key, []).append(r.text)
+        if r.severity and r.severity != "none":
+            by_severity.setdefault(r.severity, []).append(r.text)
 
-        # Category
-        key = r.category if r.category else "Unspecified"
-        analytics["by_category"].setdefault(key, []).append(r.text)
+        if r.category and r.category != "none":
+            by_category.setdefault(r.category, []).append(r.text)
 
-        # Context
-        key = r.context if r.context else "Unspecified"
-        analytics["by_context"].setdefault(key, []).append(r.text)
+        if r.context and r.context != "none":
+            by_context.setdefault(r.context, []).append(r.text)
 
-    return analytics
+    return {
+        "total_responses": len(responses),
+        "by_severity": by_severity,
+        "by_category": by_category,
+        "by_context": by_context,
+    }

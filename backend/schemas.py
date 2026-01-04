@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List , Optional 
+from typing import List , Optional , Dict 
 
 # Form Schemas 
 class FormCreate(BaseModel):
@@ -22,7 +22,7 @@ class FormRead(BaseModel):
 class ResponseCreate(BaseModel):
     form_id: int
     text: str
-    category: str
+    category: Optional[str] = None 
     context: Optional[str] = None
     severity: Optional[str] = None
 
@@ -52,3 +52,9 @@ class PasswordResetRequest(BaseModel):
 class PasswordReset(BaseModel):
     token : str 
     new_password : str 
+
+class FormAnalytics(BaseModel): 
+   total_responses : int 
+   severity : Dict[str , int ]
+   category : Dict[str , int ]
+   context : Dict[str , int]
