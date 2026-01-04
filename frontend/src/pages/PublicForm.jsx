@@ -36,6 +36,7 @@ useEffect(() => {
       severity: severity || null 
     });
     alert("Feedback submitted!");
+    window.close(); 
   };
 
   if (!form) return <p>Loading...</p>;

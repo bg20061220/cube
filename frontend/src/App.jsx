@@ -15,13 +15,13 @@ function App(){
   return (
     <BrowserRouter>
     <Routes>
-      <Route path = "/dashboard" element = {<Dashboard />} />
+      <Route path = "/" element = {<Dashboard />} />
       {/* <Route path = "/dashboard/:formId" element = {<FormResponses />} /> */}
       <Route path = "/form/:formId" element = {<PublicForm />} />
-      <Route path="/login" element={<Login setUser={setUser} />} />
-      <Route path="/" element={<Signup />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
+      {/* <Route path="/login" element={<Login setUser={setUser} />} /> */}
+      {/* <Route path="/" element={<Signup />} /> */}
+      {/* <Route path="/forgot-password" element={<ForgotPassword />} /> */}
+      {/* <Route path="/reset-password" element={<ResetPassword />} /> */}
       <Route path="/analytics/:formId" element={<AnalyticsDashboard />} />
 
 

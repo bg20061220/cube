@@ -29,7 +29,15 @@ def get_db():
         db.close()
 
 def get_current_user(db: Session = Depends(get_db)):
-    return db.query(models.User).first()  # always returns the first user
+    # Always return the first (or only) user
+    user = db.query(models.User).first()
+    if not user:
+        # Create a default user if none exists
+        user = models.User(email="demo@example.com", password_hash="demo")
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+    return user # always returns the first user
 
 def add_to_group(group , key , value) : 
     if value is None or value.strip() == "" : 
