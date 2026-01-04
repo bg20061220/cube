@@ -6,7 +6,7 @@ export default function CreateForm({ onCreate }) {
   const [title, setTitle] = useState("");
   const [contexts, setContexts] = useState("");
   const [link, setLink] = useState(null);
-
+  const VERCEL_URL = "https://cubeee-20dictjbk-bhavya-goels-projects.vercel.app/";
   const handleCreate = async () => {
     const res = await api.post("/forms/", {
       title,
@@ -14,7 +14,8 @@ export default function CreateForm({ onCreate }) {
     });
 
     onCreate(res.data.id);
-    setLink(`/form/${res.data.id}`);
+    setLink(`${VERCEL_URL}/form/${res.data.id}`);
+
   };
 
   return (
@@ -39,9 +40,8 @@ export default function CreateForm({ onCreate }) {
         <p>
           Share link:
           <br />
-          <a href={link}>
-            {window.location.origin + link}
-          </a>
+          <a href={link} target="_blank" rel="noopener noreferrer">{link}</a>
+
         </p>
       )}
       </div>
